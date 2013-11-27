@@ -63,6 +63,7 @@ public class pathGenerationTrial {
 	public static Stack<Point> generatePath(boolean finish, double startPointX,
 			double startPointY, double endPointX, double endPointY,
 			ArrayList<Point> dangerPointsL, Stack<Point> firstStack) {
+		System.out.println("inside generatePath");
 		Stack<Point> generatedStack = firstStack;
 		Stack<Point> backpedalStack = new Stack<Point>();
 		double currentX = startPointX;
@@ -70,12 +71,15 @@ public class pathGenerationTrial {
 		double displacementX = (endPointX - currentX);
 		double displacementY = (endPointY - currentY);
 		Point endPoint = new Point(endPointX, endPointY, false);
+		System.out.println("got here");
+		System.out.println("Endpoint: " + endPoint.pointToTV());
 		if (!isDangerous(endPoint, dangerPointsL)) {
+			System.out.println("inside if");
 			boolean doneX = false, doneY = false;
 			while (!doneX && !doneY) {
+				System.out.println("inside while");
 				if (!doneX) {
-					Point nextP = new Point((currentX + displacementX
-							/ Math.abs(displacementX)), currentY, false);
+					Point nextP = new Point((currentX + displacementX / Math.abs(displacementX)), currentY, false);
 					if (!isDangerous(nextP, dangerPointsL)) {
 						if (endPointX != (currentX)) {
 							currentX += displacementX / Math.abs(displacementX);
@@ -89,8 +93,7 @@ public class pathGenerationTrial {
 					}
 				}
 				if (!doneY) {
-					Point nextP = new Point(currentX, currentY + displacementY
-							/ Math.abs(displacementY), false);
+					Point nextP = new Point(currentX, currentY + displacementY / Math.abs(displacementY), false);
 					if (!isDangerous(nextP, dangerPointsL)) {
 						if (endPointY != currentY) {
 							currentY += displacementY / Math.abs(displacementY);
@@ -105,9 +108,7 @@ public class pathGenerationTrial {
 				}
 			}
 			while (!backpedalStack.empty()) {
-				if (generatedStack.isEmpty()
-						|| !Point.areSamePoints(backpedalStack.peek(),
-								generatedStack.peek())) {
+				if (generatedStack.isEmpty() || !Point.areSamePoints(backpedalStack.peek(), generatedStack.peek())) {
 					generatedStack.push(backpedalStack.pop());
 				} else {
 					backpedalStack.pop();
@@ -131,78 +132,36 @@ public class pathGenerationTrial {
 				o = currentStack.peek();
 				backPedalStack.push(currentStack.pop());
 			} else {
+				System.out.print("\t" + currentStack.peek().pointToTV());
 				currentStack.pop();
-				Point nextP = currentStack.peek();
-				if (isDangerous(Point.upAdjacentPoint(backPedalStack.peek()),
-						dangerousPointsL)
-						|| isDangerous(
-								Point.downAdjacentPoint(backPedalStack.peek()),
-								dangerousPointsL)) {
-					if (backPedalStack.peek().x <= (redX1 + redX2) / 2) {
-						System.out.print("\t"
-								+ Point.upAdjacentPoint(backPedalStack.peek())
-										.pointToTV());
-						System.out
-								.print("\t"
-										+ Point.downAdjacentPoint(
-												backPedalStack.peek())
-												.pointToTV());
-						currentStack.push(Point
-								.leftAdjacentPoint(backPedalStack.peek()));
-						backPedalStack.push(Point
-								.leftAdjacentPoint(backPedalStack.peek()));
-					} else {
-						System.out.print("\t"
-								+ Point.upAdjacentPoint(backPedalStack.peek())
-										.pointToTV());
-						System.out
-								.print("\t"
-										+ Point.downAdjacentPoint(
-												backPedalStack.peek())
-												.pointToTV());
-						currentStack.push(Point
-								.rightAdjacentPoint(backPedalStack.peek()));
-						backPedalStack.push(Point
-								.rightAdjacentPoint(backPedalStack.peek()));
+				if (!currentStack.isEmpty()){
+					Point nextP = currentStack.peek();
+					if (isDangerous(Point.upAdjacentPoint(backPedalStack.peek()), dangerousPointsL)
+							|| isDangerous(Point.downAdjacentPoint(backPedalStack.peek()), dangerousPointsL)) {
+						if (backPedalStack.peek().x <= (redX1 + redX2) / 2 && !Point.leftAdjacentPoint(backPedalStack.peek()).outOfBounds(widthX, widthY)) {
+							System.out.print("\t" + currentStack.peek().pointToTV());
+							currentStack.push(Point.leftAdjacentPoint(backPedalStack.peek()));
+							backPedalStack.push(Point.leftAdjacentPoint(backPedalStack.peek()));
+						} else if (!Point.rightAdjacentPoint(backPedalStack.peek()).outOfBounds(widthX, widthY)) {
+							System.out.print("\t" + currentStack.peek().pointToTV());
+							currentStack.push(Point.rightAdjacentPoint(backPedalStack.peek()));
+							backPedalStack.push(Point.rightAdjacentPoint(backPedalStack.peek()));
+						}
+					} else if (isDangerous(Point.rightAdjacentPoint(backPedalStack.peek()), dangerousPointsL)
+							|| isDangerous(Point.leftAdjacentPoint(backPedalStack.peek()), dangerousPointsL)) {
+						if (backPedalStack.peek().y <= (redY1 + redY2) / 2 && !Point.downAdjacentPoint(backPedalStack.peek()).outOfBounds(widthX, widthY)) {
+							System.out.print("\t" + currentStack.peek().pointToTV());
+							currentStack.push(Point.downAdjacentPoint(backPedalStack.peek()));
+							backPedalStack.push(Point.downAdjacentPoint(backPedalStack.peek()));
+						} else if(!Point.upAdjacentPoint(backPedalStack.peek()).outOfBounds(widthX, widthY)) {
+							System.out.print("\t" + currentStack.peek().pointToTV());
+							currentStack.push(Point.upAdjacentPoint(backPedalStack.peek()));
+							backPedalStack.push(Point.upAdjacentPoint(backPedalStack.peek()));
+						}
 					}
-				} else if (isDangerous(
-						Point.rightAdjacentPoint(backPedalStack.peek()),
-						dangerousPointsL)
-						|| isDangerous(
-								Point.leftAdjacentPoint(backPedalStack.peek()),
-								dangerousPointsL)) {
-					if (backPedalStack.peek().y < (redY1 + redY2) / 2) {
-						System.out
-								.print("\t"
-										+ Point.leftAdjacentPoint(
-												backPedalStack.peek())
-												.pointToTV());
-						System.out.print("\t"
-								+ Point.rightAdjacentPoint(
-										backPedalStack.peek()).pointToTV());
-						currentStack.push(Point
-								.downAdjacentPoint(backPedalStack.peek()));
-						backPedalStack.push(Point
-								.downAdjacentPoint(backPedalStack.peek()));
-					} else {
-						System.out
-								.print("\t"
-										+ Point.leftAdjacentPoint(
-												backPedalStack.peek())
-												.pointToTV());
-						System.out.print("\t"
-								+ Point.rightAdjacentPoint(
-										backPedalStack.peek()).pointToTV());
-						currentStack.push(Point.upAdjacentPoint(backPedalStack
-								.peek()));
-						backPedalStack.push(Point
-								.upAdjacentPoint(backPedalStack.peek()));
-					}
+					currentStack = generatePath(false, o.x, o.y, nextP.x, nextP.y,
+							dangerousPointsL, currentStack);
 				}
-				currentStack = generatePath(false, o.x, o.y, nextP.x, nextP.y,
-						dangerousPointsL, currentStack);
-				// currentStack.push(backPedalStack.pop());
-
 			}
 		}
 	}
@@ -210,15 +169,23 @@ public class pathGenerationTrial {
 	public static void main(String[] args) {
 		Stack<Point> emptyStack = new Stack<Point>();
 		Stack<Point> backPedalStack = new Stack<Point>();
-		double finishX = 2, finishY = 9;
-		double redX1 = 5, redY1 = 5;
-		double redX2 = 7, redY2 = 7;
-		double startX = 10, startY = 0;
+		double finishX = 4, finishY = 6;
+		double redX1 = 2, redY1 = 5;
+		double redX2 = 3, redY2 = 7;
+		double greenX1 = 4, greenY1 = 5;
+		double greenX2 = 6, greenY2 = 7;
+		double startX = 0, startY = 0;
 		int widthX = 10, widthY = 10;
 		ArrayList<Point> dangerousPointsL = new ArrayList<Point>();
 		insertDangerList(redX1, redY1, redX2, redY2, dangerousPointsL);
-		emptyStack = generateSetPath(false, startX, startY, startX, startY,
-				widthX, widthY, dangerousPointsL, emptyStack);
+		insertDangerList(0, widthY, 0, widthY, dangerousPointsL);
+		insertDangerList(widthX,widthY, widthX, widthY, dangerousPointsL);
+		insertDangerList(widthX, 0, widthX, 0, dangerousPointsL);
+		//insertDangerList(greenX1, greenY1, greenX2, greenY2, dangerousPointsL);
+		//emptyStack = generateSetPath(false, startX, startY, startX, startY,
+			//	widthX, widthY, dangerousPointsL, emptyStack);
+		//backPedalStack.push(new Point(startX, startY, false));
+		emptyStack = generatePath(false, startX, startY, finishX, finishY, dangerousPointsL, emptyStack);
 		runSimpleCourse(finishX, finishY, widthX, widthY, redX1, redX2, redY1,
 				redY2, dangerousPointsL, emptyStack, backPedalStack);
 
