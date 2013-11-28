@@ -37,18 +37,18 @@ public class pathGenerationTrial {
 		double currentY = startPointY;
 		int i;
 		if (currentX < (widthX) / 2) {
-			i = 0;
-		} else {
 			i = 1;
+		} else {
+			i = 0;
 		}
-		while (widthY >= 0) {
+		while (widthY >= 1) {
 			if (i % 2 == 0) {
-				for (int j = (int) widthX; j >= 0; j--) {
+				for (int j = (int) widthX; j >= 1; j--) {
 					generatedStack.push(new Point((j), Math.abs(currentY
 							- widthY), false));
 				}
 			} else {
-				for (int j = 0; j <= (int) widthX; j++) {
+				for (int j = 1; j <= (int) widthX; j++) {
 					generatedStack.push(new Point((j), Math.abs(currentY
 							- widthY), false));
 				}
@@ -63,7 +63,7 @@ public class pathGenerationTrial {
 	public static Stack<Point> generatePath(boolean finish, double startPointX,
 			double startPointY, double endPointX, double endPointY,
 			ArrayList<Point> dangerPointsL, Stack<Point> firstStack) {
-		System.out.println("inside generatePath");
+		//System.out.println("inside generatePath");
 		Stack<Point> generatedStack = firstStack;
 		Stack<Point> backpedalStack = new Stack<Point>();
 		double currentX = startPointX;
@@ -71,13 +71,13 @@ public class pathGenerationTrial {
 		double displacementX = (endPointX - currentX);
 		double displacementY = (endPointY - currentY);
 		Point endPoint = new Point(endPointX, endPointY, false);
-		System.out.println("got here");
-		System.out.println("Endpoint: " + endPoint.pointToTV());
+		//System.out.println("got here");
+		//System.out.println("Endpoint: " + endPoint.pointToTV());
 		if (!isDangerous(endPoint, dangerPointsL)) {
-			System.out.println("inside if");
+			//System.out.println("inside if");
 			boolean doneX = false, doneY = false;
 			while (!doneX && !doneY) {
-				System.out.println("inside while");
+				//System.out.println("inside while");
 				if (!doneX) {
 					Point nextP = new Point((currentX + displacementX / Math.abs(displacementX)), currentY, false);
 					if (!isDangerous(nextP, dangerPointsL)) {
@@ -182,10 +182,10 @@ public class pathGenerationTrial {
 		insertDangerList(widthX,widthY, widthX, widthY, dangerousPointsL);
 		insertDangerList(widthX, 0, widthX, 0, dangerousPointsL);
 		//insertDangerList(greenX1, greenY1, greenX2, greenY2, dangerousPointsL);
-		//emptyStack = generateSetPath(false, startX, startY, startX, startY,
-			//	widthX, widthY, dangerousPointsL, emptyStack);
-		//backPedalStack.push(new Point(startX, startY, false));
-		emptyStack = generatePath(false, startX, startY, finishX, finishY, dangerousPointsL, emptyStack);
+		emptyStack = generateSetPath(false, startX, startY, startX, startY,
+				widthX, widthY, dangerousPointsL, emptyStack);
+		backPedalStack.push(new Point(startX, startY, false));
+		//emptyStack = generatePath(false, startX, startY, finishX, finishY, dangerousPointsL, emptyStack);
 		runSimpleCourse(finishX, finishY, widthX, widthY, redX1, redX2, redY1,
 				redY2, dangerousPointsL, emptyStack, backPedalStack);
 
